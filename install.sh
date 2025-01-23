@@ -23,7 +23,7 @@ if ! command -v git &> /dev/null; then
   error "Error: git is not installed. Please install git and try again."
 fi
 
-# Check if Python 3.8+ is installed
+# Check if Python 3.11+ is installed
 if ! command -v python3 &> /dev/null; then
   error "Error: Python 3 is not installed. Please install Python 3.11 or higher and try again."
 fi
