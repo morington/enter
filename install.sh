@@ -45,10 +45,22 @@ if ! dpkg -l | grep -q "$PYTHON_VENV_PACKAGE"; then
   error "Error: Failed to install $PYTHON_VENV_PACKAGE."
 fi
 
-# Clone the repository from the dev branch
-success "Cloning the repository (dev branch)..."
-git clone -b dev https://github.com/morington/enter.git || error "Error: Failed to clone the repository."
-cd enter || error "Error: Failed to enter the project directory."
+# Ensure ~/.local/bin exists
+mkdir -p ~/.local/bin || error "Error: Failed to create ~/.local/bin directory."
+
+# Define the installation directory
+INSTALL_DIR="$HOME/.local/bin/enter"
+
+# Check if the 'enter' directory exists and remove it if it does
+if [[ -d "$INSTALL_DIR" ]]; then
+  success "Removing existing 'enter' directory..."
+  rm -rf "$INSTALL_DIR" || error "Error: Failed to remove the existing 'enter' directory."
+fi
+
+# Clone the repository from the dev branch into ~/.local/bin/enter
+success "Cloning the repository (dev branch) into $INSTALL_DIR..."
+git clone -b dev https://github.com/morington/enter.git "$INSTALL_DIR" || error "Error: Failed to clone the repository."
+cd "$INSTALL_DIR" || error "Error: Failed to enter the project directory."
 
 # Create a virtual environment
 success "Creating a virtual environment..."
@@ -106,16 +118,23 @@ yaml_file_path = $CONFIG_FILE
 lang = en
 EOL
 
-# Create a launcher script
-LAUNCHER_SCRIPT="/usr/local/bin/enter"
-success "Creating a launcher script..."
-cat <<EOL | sudo tee "$LAUNCHER_SCRIPT" > /dev/null
+# Create a launcher script in ~/.local/bin
+LAUNCHER_SCRIPT="$HOME/.local/bin/enter"
+success "Creating a launcher script in ~/.local/bin..."
+cat <<EOL > "$LAUNCHER_SCRIPT"
 #!/bin/bash
-$(pwd)/venv/bin/python -m src "\$@"
+"$INSTALL_DIR/venv/bin/python" -m src "\$@"
 EOL
 
 # Make the launcher script executable
-sudo chmod +x "$LAUNCHER_SCRIPT" || error "Error: Failed to make the launcher script executable."
+chmod +x "$LAUNCHER_SCRIPT" || error "Error: Failed to make the launcher script executable."
+
+# Add ~/.local/bin to PATH if it's not already there
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+  success "Adding ~/.local/bin to your PATH..."
+  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+  source ~/.bashrc
+fi
 
 # Completion message
 success "Installation completed successfully!"
