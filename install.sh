@@ -39,8 +39,9 @@ if (( 10#$PYTHON_VERSION_NUM < 311 )); then
   error "Error: Python 3.11 or higher is required. Your version: $PYTHON_VERSION"
 fi
 
-# Check if python3-venv is available
-if ! dpkg -l | grep -q python3-venv; then
+# Check if pythonX.Y-venv is available (e.g., python3.11-venv)
+PYTHON_VENV_PACKAGE="python${PYTHON_VERSION}-venv"
+if ! dpkg -l | grep -q "$PYTHON_VENV_PACKAGE"; then
   error "Error: Failed to install python3-venv."
 fi
 
