@@ -18,3 +18,17 @@ class CommandExecutor(ABC):
     @abstractmethod
     def execute(self, command: str) -> None:
         ...
+
+
+class ConfigInterface(ABC):
+    @abstractmethod
+    def get(self, key: str) -> str:
+        ...
+
+    @abstractmethod
+    def yaml_file_path(self) -> str:
+        ...
+
+    @abstractmethod
+    def lang(self) -> str:
+        ...
