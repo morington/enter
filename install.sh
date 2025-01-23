@@ -34,18 +34,14 @@ PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_inf
 # Convert version to an integer for comparison (e.g., "3.11" -> 311)
 PYTHON_VERSION_NUM=$(echo "$PYTHON_VERSION" | tr -d '.')
 
-# Debug output (optional)
-echo "Detected Python version: $PYTHON_VERSION"
-echo "Numeric Python version: $PYTHON_VERSION_NUM"
-
 # Check if Python version is 3.11 or higher
 if (( 10#$PYTHON_VERSION_NUM < 311 )); then
   error "Error: Python 3.11 or higher is required. Your version: $PYTHON_VERSION"
 fi
 
 # Check if python3-venv is available
-if ! python3 -c "import ensurepip" &> /dev/null; then
-  error "Error: python3-venv is not installed. Please install it using the following command:\n\n    sudo apt install python3-venv\n\nAfter installation, rerun this script."
+if ! dpkg -l | grep -q python3-venv; then
+  error "Error: Failed to install python3-venv."
 fi
 
 # Clone the repository from the dev branch
