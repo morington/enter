@@ -1,0 +1,29 @@
+scripts:
+  gen_ssh_key: |
+    if [ ! -f ~/.ssh/id_rsa ]; then
+      echo "SSH-ключ не найден. Генерация нового ключа..."
+      ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -q
+      echo "SSH-ключ успешно сгенерирован."
+    else
+      echo "SSH-ключ уже существует."
+    fi
+
+aliases:
+  hello:
+    description: "Выводит приветствие"
+    args:
+      name:
+        description: "Имя пользователя"
+        default: "Guest"
+    rargs:
+      place:
+        description: "Место, куда пользователь приветствуется"
+    commands: |
+      echo "Hello, {name}!"
+      echo "Welcome to {place}!"
+
+  generate_server_ssh_key:
+    description: "Генерация SSH-ключа"
+    commands: |
+      {gen_ssh_key}
+
