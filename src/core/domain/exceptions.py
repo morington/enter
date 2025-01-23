@@ -30,10 +30,14 @@ class BaseError(Exception):
             **kwargs: Additional context to include in the log message.
         """
         if error:
+            err_kwargs = {
+                "_cl_err": err.__class__.__name__ if err else None,
+                "_desc_err": str(err) if err else None
+            }
+
             logger.error(
                 self.message,
-                _cl_err=err.__class__.__name__ if err else None,
-                _desc_err=str(err) if err else None,
+                **err_kwargs if err else {},
                 **kwargs,
                 exc_info=True
             )
