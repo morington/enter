@@ -25,12 +25,18 @@ fi
 
 # Check if Python 3.8+ is installed
 if ! command -v python3 &> /dev/null; then
-  error "Error: Python 3 is not installed. Please install Python 3.8 or higher and try again."
+  error "Error: Python 3 is not installed. Please install Python 3.11 or higher and try again."
 fi
 
+# Check Python version
 PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
-if [[ "$PYTHON_VERSION" < "3.8" ]]; then
-  error "Error: Python 3.8 or higher is required. Please upgrade your Python version."
+
+# Convert version to an integer for comparison (e.g., "3.11" -> 311)
+PYTHON_VERSION_NUM=$(echo "$PYTHON_VERSION" | tr -d '.')
+
+# Check if Python version is 3.8 or higher
+if (( PYTHON_VERSION_NUM < 311 )); then
+  error "Error: Python 3.11 or higher is required. Your version: $PYTHON_VERSION"
 fi
 
 # Clone the repository from the dev branch
