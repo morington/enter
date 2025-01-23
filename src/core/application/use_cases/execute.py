@@ -8,7 +8,20 @@ logger: structlog.BoundLogger = structlog.getLogger(InitLoggers.executor.name)
 
 
 class ExecuteAliasUseCase:
+    """
+    A use case for executing commands based on a provided alias and arguments.
+
+    Attributes:
+        executor (CommandExecutor): An interface responsible for executing commands.
+    """
+
     def __init__(self, executor: CommandExecutor) -> None:
+        """
+        Initializes the ExecuteAliasUseCase with a command executor.
+
+        Args:
+            executor (CommandExecutor): The executor used to run commands.
+        """
         self.executor = executor
 
     def execute(
@@ -17,6 +30,14 @@ class ExecuteAliasUseCase:
             provided_args: dict[str, str],
             show_command: bool = False
     ) -> None:
+        """
+        Executes the command associated with the given alias after validating and merging arguments.
+
+        Args:
+            alias (Alias): The alias containing the command and argument definitions.
+            provided_args (dict[str, str]): Arguments provided by the user.
+            show_command (bool, optional): If True, prints the command before execution. Defaults to False.
+        """
         is_validate = alias.validate_arguments(provided_args)
 
         if is_validate:
@@ -35,6 +56,16 @@ class ExecuteAliasUseCase:
 
     @staticmethod
     def _merge_arguments(alias: Alias, provided: dict) -> dict:
+        """
+        Merges default arguments from the alias with provided arguments.
+
+        Args:
+            alias (Alias): The alias containing default arguments.
+            provided (dict): Arguments provided by the user.
+
+        Returns:
+            dict: A dictionary containing the merged arguments.
+        """
         combination = {}
 
         combination.update({arg.name: arg.default for arg in alias.args.values()})
@@ -51,6 +82,16 @@ class ExecuteAliasUseCase:
 
     @staticmethod
     def _build_command(alias: Alias, args: dict) -> str:
+        """
+        Constructs the final command by replacing placeholders in the alias command with provided arguments.
+
+        Args:
+            alias (Alias): The alias containing the command template.
+            args (dict): The arguments to replace in the command.
+
+        Returns:
+            str: The fully constructed command.
+        """
         command = alias.commands
 
         for script in alias.scripts.values():

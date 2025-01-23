@@ -4,13 +4,39 @@ import structlog
 
 
 class BaseError(Exception):
-    """Базовый класс ошибок"""
+    """
+    A base exception class for custom errors in the application.
+
+    Attributes:
+        message (str): The default error message.
+    """
 
     message: str = "BaseError"
 
-    def __init__(self, logger: structlog.BoundLogger, error: bool = True, err: Optional[Exception] = None, **kwargs):
+    def __init__(
+        self,
+        logger: structlog.BoundLogger,
+        error: bool = True,
+        err: Optional[Exception] = None,
+        **kwargs
+    ):
+        """
+        Initializes the error and logs it using the provided logger.
+
+        Args:
+            logger (structlog.BoundLogger): The logger instance for logging the error.
+            error (bool, optional): If True, logs the error as an error-level message. Defaults to True.
+            err (Optional[Exception], optional): The original exception that caused the error. Defaults to None.
+            **kwargs: Additional context to include in the log message.
+        """
         if error:
-            logger.error(self.message, _cl_err=err.__class__.__name__, _desc_err=str(err), **kwargs, exc_info=True)
+            logger.error(
+                self.message,
+                _cl_err=err.__class__.__name__ if err else None,
+                _desc_err=str(err) if err else None,
+                **kwargs,
+                exc_info=True
+            )
         else:
             logger.info(self.message, **kwargs)
 
@@ -18,44 +44,55 @@ class BaseError(Exception):
 
 
 class ConfigHandlerError(BaseError):
+    """Raised when there is an issue with the configuration file."""
     message = "Invalid configuration file"
 
 
 class ParserInvalidArgument(BaseError):
+    """Raised when an invalid argument format is encountered."""
     message = "Invalid argument format"
 
 
 class AppCritical(BaseError):
+    """Raised for unknown critical errors in the application."""
     message = "Unknown error application"
 
 
 class CommandExecutionError(BaseError):
+    """Raised when a command execution fails."""
     message = "Command execution"
 
 
 class AliasesListError(BaseError):
+    """Raised when there is an error while listing aliases."""
     message = "Listing aliases"
 
 
 class MissingRequiredArgumentsError(BaseError):
+    """Raised when required arguments are missing."""
     message = "Missing required arguments"
 
 
 class InvalidYamlConfigurationError(BaseError):
+    """Raised when the YAML configuration is invalid."""
     message = "Invalid yaml configuration"
 
 
 class UnknownYamlConfigurationError(BaseError):
+    """Raised for unknown errors related to YAML configuration."""
     message = "Unknown error yaml configuration"
 
 
 class AliasNotFoundError(BaseError):
+    """Raised when a requested alias is not found."""
     message = "Alias not found"
 
 
 class ShowInfoAliasError(BaseError):
+    """Raised when there is an error while displaying alias information."""
     message = "Displaying alias information"
 
 
 class AliasConfigurationFileNotFound(BaseError):
+    """Raised when the alias configuration file does not exist."""
     message = "The alias configuration file does not exist"
