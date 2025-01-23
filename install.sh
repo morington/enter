@@ -43,6 +43,11 @@ if (( 10#$PYTHON_VERSION_NUM < 311 )); then
   error "Error: Python 3.11 or higher is required. Your version: $PYTHON_VERSION"
 fi
 
+# Check if python3-venv is available
+if ! python3 -c "import ensurepip" &> /dev/null; then
+  error "Error: python3-venv is not installed. Please install it using the following command:\n\n    sudo apt install python3-venv\n\nAfter installation, rerun this script."
+fi
+
 # Clone the repository from the dev branch
 success "Cloning the repository (dev branch)..."
 git clone -b dev https://github.com/morington/enter.git || error "Error: Failed to clone the repository."
