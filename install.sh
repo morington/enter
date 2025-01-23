@@ -34,8 +34,12 @@ PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_inf
 # Convert version to an integer for comparison (e.g., "3.11" -> 311)
 PYTHON_VERSION_NUM=$(echo "$PYTHON_VERSION" | tr -d '.')
 
-# Check if Python version is 3.8 or higher
-if (( PYTHON_VERSION_NUM < 311 )); then
+# Debug output (optional)
+echo "Detected Python version: $PYTHON_VERSION"
+echo "Numeric Python version: $PYTHON_VERSION_NUM"
+
+# Check if Python version is 3.11 or higher
+if (( 10#$PYTHON_VERSION_NUM < 311 )); then
   error "Error: Python 3.11 or higher is required. Your version: $PYTHON_VERSION"
 fi
 
