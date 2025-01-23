@@ -5,7 +5,7 @@ import structlog
 import yaml
 
 from src.core.application.interfaces import RepositoryInterface
-from src.core.domain.exceptions import InvalidConfigurationError, AliasNotFoundError, UnknownConfigurationError, \
+from src.core.domain.exceptions import InvalidYamlConfigurationError, AliasNotFoundError, UnknownYamlConfigurationError, \
     AliasConfigurationFileNotFound
 from src.core.domain.models import Alias, Script, Argument
 from src.infrastructure.improved_logging.loggers import InitLoggers
@@ -27,7 +27,7 @@ class YamlRepository(RepositoryInterface):
         if not self.file_path.exists():
             raise FileNotFoundError(f"Alias file {self.file_path} not found")
         if not self.file_path.suffix.lower() in ('.yaml', '.yml'):
-            raise InvalidConfigurationError(logger)
+            raise InvalidYamlConfigurationError(logger)
 
     def get_all(self) -> dict[str, Alias]:
         try:
@@ -35,9 +35,9 @@ class YamlRepository(RepositoryInterface):
                 data = yaml.safe_load(f) or {}
                 return self._parse_aliases(data)
         except yaml.YAMLError as e:
-            raise InvalidConfigurationError(logger, err=e) from e
+            raise InvalidYamlConfigurationError(logger, err=e) from e
         except Exception as e:
-            raise UnknownConfigurationError(logger, err=e) from e
+            raise UnknownYamlConfigurationError(logger, err=e) from e
 
     def get(self, alias_name: str) -> Alias:
         aliases = self.get_all()

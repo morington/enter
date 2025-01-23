@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.infrastructure.improved_logging.main import LoggerReg, SetupLogger
 
 
@@ -8,9 +10,9 @@ class InitLoggers:
     models = LoggerReg(name="MODELS", level=LoggerReg.Level.INFO)
     yaml = LoggerReg(name="YAML", level=LoggerReg.Level.INFO)
 
-    def __init__(self, debug: bool = True) -> None:
+    def __init__(self, debug: bool = False, set_level: Optional[LoggerReg.Level] = None) -> None:
         if debug:
-            self.set_all_loggers_to_debug()
+            self.set_all_loggers_to_debug(level=set_level)
 
         SetupLogger(
             developer_mode=True,
@@ -21,13 +23,14 @@ class InitLoggers:
             ],
         )
 
-    def set_all_loggers_to_debug(self) -> None:
-        """
-        Устанавливает уровень логирования всех атрибутов класса на DEBUG.
-        """
+    def set_all_loggers_to_debug(self, level: Optional[LoggerReg.Level]) -> None:
+        """Sets the logging level for all loggers."""
         for key, value in self.__class__.__dict__.items():
             if isinstance(value, LoggerReg):
-                value.level = LoggerReg.Level.DEBUG
+                if level:
+                    value.level = level
+                else:
+                    value.level = LoggerReg.Level.DEBUG
 
 
 if __name__ == "__main__":

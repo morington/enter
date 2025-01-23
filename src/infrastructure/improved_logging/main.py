@@ -117,9 +117,7 @@ class SetupLogger:
             if name_registration is None
             else name_registration
         )
-        self.name_registration.extend(
-            [LoggerReg(name="confhub", level=LoggerReg.Level.INFO)]
-        )
+
         self.developer_mode = developer_mode
         self.log_to_file = log_to_file
         self.logs_dir = logs_dir

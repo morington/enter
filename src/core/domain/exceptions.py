@@ -17,6 +17,10 @@ class BaseError(Exception):
         super().__init__(self.message)
 
 
+class ConfigHandlerError(BaseError):
+    message = "Invalid configuration file"
+
+
 class ParserInvalidArgument(BaseError):
     message = "Invalid argument format"
 
@@ -37,12 +41,12 @@ class MissingRequiredArgumentsError(BaseError):
     message = "Missing required arguments"
 
 
-class InvalidConfigurationError(BaseError):
-    message = "Invalid configuration"
+class InvalidYamlConfigurationError(BaseError):
+    message = "Invalid yaml configuration"
 
 
-class UnknownConfigurationError(BaseError):
-    message = "Unknown error configuration"
+class UnknownYamlConfigurationError(BaseError):
+    message = "Unknown error yaml configuration"
 
 
 class AliasNotFoundError(BaseError):
