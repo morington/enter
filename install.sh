@@ -110,7 +110,7 @@ EOL
 fi
 
 # Update config.ini to point to the config_enter.yml file
-CONFIG_INI="src/config.ini"
+CONFIG_INI="$HOME/.local/bin/enter/config.ini"
 success "Updating config.ini to point to the new configuration file..."
 cat <<EOL > "$CONFIG_INI"
 [ENTER]
@@ -119,20 +119,20 @@ lang = en
 EOL
 
 # Create a launcher script in ~/.local/bin
-LAUNCHER_SCRIPT="$HOME/.local/bin/enter"
-success "Creating a launcher script in ~/.local/bin..."
+LAUNCHER_SCRIPT="$HOME/.local/bin/enter/enter"
+success "Creating a launcher script in ~/.local/bin/enter..."
 cat <<EOL > "$LAUNCHER_SCRIPT"
 #!/bin/bash
-"$INSTALL_DIR/venv/bin/python" -m src "\$@"
+PYTHONPATH="$INSTALL_DIR" "$INSTALL_DIR/venv/bin/python" -m src.main.main "\$@"
 EOL
 
 # Make the launcher script executable
 chmod +x "$LAUNCHER_SCRIPT" || error "Error: Failed to make the launcher script executable."
 
 # Add ~/.local/bin to PATH if it's not already there
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-  success "Adding ~/.local/bin to your PATH..."
-  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+if [[ ":$PATH:" != *":$HOME/.local/bin/enter:"* ]]; then
+  success "Adding ~/.local/bin/enter to your PATH..."
+  echo 'export PATH="$HOME/.local/bin/enter:$PATH"' >> ~/.bashrc
   source ~/.bashrc
 fi
 
