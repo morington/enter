@@ -42,7 +42,7 @@ fi
 # Check if pythonX.Y-venv is available (e.g., python3.11-venv)
 PYTHON_VENV_PACKAGE="python${PYTHON_VERSION}-venv"
 if ! dpkg -l | grep -q "$PYTHON_VENV_PACKAGE"; then
-  error "Error: Failed to install python3-venv."
+  error "Error: Failed to install $PYTHON_VENV_PACKAGE."
 fi
 
 # Clone the repository from the dev branch
