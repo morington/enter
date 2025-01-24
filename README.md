@@ -317,10 +317,10 @@ $ enter hello name=John place=World --debug
 
 ---
 
-### Этот проект вдохновлён инструментом [Just](https://github.com/casey/just), созданным Casey. Спасибо за вдохновение и идеи!
+#### Этот проект вдохновлён инструментом [Just](https://github.com/casey/just), созданным Casey. Спасибо за вдохновение и идеи!
 
 ## Автор
 
 ---
 
-### Проект разработан и поддерживается [morington](https://github.com/morington).
+#### Проект разработан и поддерживается [morington](https://github.com/morington).
