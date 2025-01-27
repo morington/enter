@@ -1,4 +1,6 @@
 import subprocess
+from pathlib import Path
+from typing import Optional
 
 import structlog
 
@@ -20,19 +22,22 @@ class SubprocessExecutor(CommandExecutor):
         execute: Executes a shell command using `subprocess.run`.
     """
 
-    def execute(self, command: str) -> None:
+    def execute(self, command: str, bash: bool = True, cwd: Optional[str | Path] = None) -> None:
         """
         Executes the provided shell command.
 
         Args:
+            bash (bool): Execution through bash
             command (str): The shell command to execute.
+            cwd (Optional[str]): The path to execute the command
 
         Raises:
             CommandExecutionError: If the command execution fails.
         """
         try:
             # Execute the command using subprocess.run
-            subprocess.run(["/bin/bash", "-c", command], check=True)
+            _command = ["/bin/bash", "-c", command] if bash else command
+            subprocess.run(_command, cwd=cwd, check=True, shell=not bash)
         except subprocess.CalledProcessError as e:
             # Raise a custom error if the command fails
             raise CommandExecutionError(logger, err=e) from e

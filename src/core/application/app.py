@@ -25,7 +25,7 @@ def app(args: Namespace) -> None:
 
     # Process the “updates” command to update Enter.
     if args.update:
-        executor.execute("git pull")
+        executor.execute("git pull", cwd=config.enter_path)
 
     # Handle the 'list' command to display all aliases
     elif args.list:

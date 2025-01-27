@@ -100,6 +100,16 @@ class ConfigHandler(ConfigInterface):
         return value
 
     @property
+    def enter_path(self) -> Path:
+        """
+        Retrieves the path to the YAML file from the configuration.
+
+        Returns:
+            Path: The path to the YAML file.
+        """
+        return Path(self.get("enter_path"))
+
+    @property
     def yaml_file_path(self) -> Path:
         """
         Retrieves the path to the YAML file from the configuration.

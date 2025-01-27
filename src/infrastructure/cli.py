@@ -30,6 +30,7 @@ class CommandLineInterfaceParser:
         # Define command-line arguments
         parser.add_argument("alias", nargs="?", help="Alias name to execute")
         parser.add_argument("args", nargs="*", help="Arguments for the alias")
+        parser.add_argument("--update", action="store_true", help="Update enter")
         parser.add_argument("--debug", action="store_true", help="Enable debug mode")
         parser.add_argument("--list", action="store_true", help="List all aliases")
         parser.add_argument("--info", action="store_true", help="Show alias details")
