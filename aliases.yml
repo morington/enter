@@ -1,29 +1,60 @@
 scripts:
-  gen_ssh_key: |
-    if [ ! -f ~/.ssh/id_rsa ]; then
-      echo "SSH-ключ не найден. Генерация нового ключа..."
-      ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -q
-      echo "SSH-ключ успешно сгенерирован."
-    else
-      echo "SSH-ключ уже существует."
+  gen_password: |
+    length={length}
+    count={count}
+    use_digits={use_digits}
+    use_upper={use_upper}
+    use_lower={use_lower}
+    use_special={use_special}
+    
+    chars=""
+    if [[ $use_digits -eq 1 ]]; then
+        chars+="0123456789"
     fi
+    if [[ $use_upper -eq 1 ]]; then
+        chars+="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    fi
+    if [[ $use_lower -eq 1 ]]; then
+        chars+="abcdefghijklmnopqrstuvwxyz"
+    fi
+    if [[ $use_special -eq 1 ]]; then
+        chars+="%*)?@#$~"
+    fi
+    
+    if [[ -z "$chars" ]]; then
+        echo "Ошибка: Не выбрано ни одного типа символов."
+        exit 1
+    fi
+    
+    for (( i=0; i<count; i++ )); do
+        password=""
+        for (( j=0; j<length; j++ )); do
+            password+="${chars:$((RANDOM % ${#chars})):1}"
+        done
+        echo "$password"
+    done
 
 aliases:
-  hello:
-    description: "Выводит приветствие"
+  generate_password:
+    description: "Generate passwords with specified length and character types"
     args:
-      name:
-        description: "Имя пользователя"
-        default: "Guest"
-    rargs:
-      place:
-        description: "Место, куда пользователь приветствуется"
+      length:
+        description: "Length of the password"
+        default: "6"
+      count:
+        description: "Number of passwords to generate"
+        default: "10"
+      use_digits:
+        description: "Use digits (0-9)"
+        default: "1"
+      use_upper:
+        description: "Use uppercase letters (A-Z)"
+        default: "0"
+      use_lower:
+        description: "Use lowercase letters (a-z)"
+        default: "1"
+      use_special:
+        description: "Use special characters (%*)?@#$~"
+        default: "0"
     commands: |
-      echo "Hello, {name}!"
-      echo "Welcome to {place}!"
-
-  generate_server_ssh_key:
-    description: "Генерация SSH-ключа"
-    commands: |
-      {gen_ssh_key}
-
+      {gen_password}

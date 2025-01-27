@@ -24,7 +24,10 @@ class ConfigHandler(ConfigInterface):
         _config (configparser.ConfigParser): An instance of ConfigParser for reading and writing the configuration file.
     """
 
-    _config_file: Path = Path(os.getenv("PYTHONPATH")) / "config.ini"
+    if os.getenv("MODE_DEV"):
+        _config_file: Path = Path("config.ini")
+    else:
+        _config_file: Path = Path(os.getenv("PYTHONPATH")) / "config.ini"
     _required_fields: tuple[str, ...] = ("yaml_file_path", "lang")
 
     def __init__(self) -> None:

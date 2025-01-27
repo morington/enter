@@ -1,3 +1,5 @@
+import re
+
 import structlog
 
 from src.core.application.interfaces import CommandExecutor
@@ -42,15 +44,18 @@ class ExecuteAliasUseCase:
 
         if is_validate:
             final_args = self._merge_arguments(alias, provided_args)
-            command = self._build_command(alias, final_args)
+            command, is_scripts = self._build_command(alias, final_args)
 
-            if show_command:
+            if show_command and not is_scripts:
                 logger.warning("Command execution display enabled")
                 for cmd_line in command.splitlines():
                     cmd_line = cmd_line.strip()
                     if cmd_line:
                         print(f"\n> {cmd_line}")
                         self.executor.execute(cmd_line)
+            elif show_command and is_scripts:
+                logger.warning("You can not view the script in line. These functions are in development!")
+                self.executor.execute(command)
             else:
                 self.executor.execute(command)
 
@@ -81,7 +86,18 @@ class ExecuteAliasUseCase:
         return combination
 
     @staticmethod
-    def _build_command(alias: Alias, args: dict) -> str:
+    def _custom_format(template, **kwargs) -> str:
+        # Regular expression to search for placeholders like {key}
+        pattern = re.compile(r'\{(.*?)\}')
+
+        def replace_match(match):
+            key = match.group(1)  # Retrieving the key from the placeholder
+            return str(kwargs.get(key, match.group(0)))
+
+        # Replace all placeholders in the template
+        return pattern.sub(replace_match, template)
+
+    def _build_command(self, alias: Alias, args: dict) -> tuple[str, bool]:
         """
         Constructs the final command by replacing placeholders in the alias command with provided arguments.
 
@@ -93,8 +109,10 @@ class ExecuteAliasUseCase:
             str: The fully constructed command.
         """
         command = alias.commands
+        is_scripts = False
 
         for script in alias.scripts.values():
             command = command.replace(f"{{{script.name}}}", script.content)
+            is_scripts = True
 
-        return command.format(**args)
+        return self._custom_format(command, **args), is_scripts

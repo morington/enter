@@ -32,7 +32,7 @@ class SubprocessExecutor(CommandExecutor):
         """
         try:
             # Execute the command using subprocess.run
-            subprocess.run(command, shell=True, check=True)
+            subprocess.run(["/bin/bash", "-c", command], check=True)
         except subprocess.CalledProcessError as e:
             # Raise a custom error if the command fails
             raise CommandExecutionError(logger, err=e) from e
