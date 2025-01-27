@@ -70,5 +70,12 @@ select = [
 ]
 ignore = [
     "E501",
-    "F401"
+    "F401",
+    "T201"
+]
+exclude = [
+    "tests/",
+    "**/__pycache__",
+    "examples/*",
+    "dev/*"
 ]
