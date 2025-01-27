@@ -170,5 +170,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-aliases.yml
-config.ini
+test_aliases.yml
+test_config.ini
