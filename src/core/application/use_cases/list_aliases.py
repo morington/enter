@@ -8,43 +8,32 @@ logger: structlog.BoundLogger = structlog.getLogger(InitLoggers.cli.name)
 
 
 class ListAliasesUseCase:
-    """
-    A use case for listing all available aliases from a repository.
-
-    Attributes:
-        repository (RepositoryInterface): The repository interface used to fetch aliases.
-    """
-
     def __init__(self, repository: RepositoryInterface):
         """
-        Initializes the ListAliasesUseCase with a repository.
+        Инициализирует ListAliasesUseCase с помощью репозитория.
 
         Args:
-            repository (RepositoryInterface): The repository to fetch aliases from.
+            repository (RepositoryInterface): Репозиторий, из которого нужно получить сведения об алиасах
         """
         self.repository = repository
 
     def execute(self) -> None:
         """
-        Fetches and displays all available aliases from the repository.
+        Выбирает и отображает все доступные алиасы из репозитория.
 
         Raises:
-            AliasesListError: If an error occurs while fetching or listing aliases.
+            AliasesListError: Если возникает ошибка при извлечении или перечислении алиасов
         """
         try:
-            # Fetch all aliases from the repository
             aliases = self.repository.get_all()
 
-            # Handle case where no aliases are found
             if not aliases:
-                print("No aliases found")
+                print("Алиасы не найдены")
                 return
 
-            # Display available aliases
-            print("[▼] Available aliases:")
+            print("[▼] Доступные алиасы:")
             for name, alias in aliases.items():
                 print(f"  › {name}: {alias.description}")
 
         except Exception as e:
-            # Raise a custom error with logging
             raise AliasesListError(logger, err=e) from e

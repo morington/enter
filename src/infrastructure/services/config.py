@@ -12,24 +12,7 @@ logger: structlog.BoundLogger = structlog.getLogger(InitLoggers.main.name)
 
 
 class ConfigHandler(ConfigInterface):
-    """
-    A class for handling configuration files in INI format.
-
-    This class is responsible for loading, validating, and retrieving values from a configuration file.
-    If the configuration file does not exist, it creates one with default required fields.
-
-    Attributes:
-        _config_file (Path): Path to the configuration file. Defaults to "config.ini" in the PYTHONPATH directory.
-        _required_fields (tuple[str, ...]): A tuple of required fields that must be present in the configuration file.
-        _config (configparser.ConfigParser): An instance of ConfigParser for reading and writing the configuration file.
-    """
-
-    if os.getenv("MODE_DEV"):
-        _config_file: Path = Path("config.ini")
-    else:
-        _config_file = Path(os.getenv("HOME")) / ".local/config/config.ini"
-
-    _required_fields: tuple[str, ...] = ("yaml_file_path", "lang")
+    _required_fields: tuple[str, ...] = ("home_path", "aliases_path")
 
     def __init__(self) -> None:
         """
@@ -37,6 +20,12 @@ class ConfigHandler(ConfigInterface):
 
         Loads and validates the configuration file. If the file does not exist, it creates a default one.
         """
+        self._config_file = Path("config.ini")
+        if not self._config_file.exists():
+            raise
+        else:
+            logger.info("File `config.ini` found")
+
         self._config = configparser.ConfigParser()
         self._ensure_config_file_exists()
         self._load_config()
@@ -101,7 +90,7 @@ class ConfigHandler(ConfigInterface):
         return value
 
     @property
-    def enter_path(self) -> Path:
+    def home_path(self) -> Path:
         """
         Retrieves the path to the YAML file from the configuration.
 
@@ -111,7 +100,7 @@ class ConfigHandler(ConfigInterface):
         return Path(self.get("enter_path"))
 
     @property
-    def yaml_file_path(self) -> Path:
+    def aliases_path(self) -> Path:
         """
         Retrieves the path to the YAML file from the configuration.
 
@@ -119,13 +108,3 @@ class ConfigHandler(ConfigInterface):
             Path: The path to the YAML file.
         """
         return Path(self.get("yaml_file_path"))
-
-    @property
-    def lang(self) -> str:
-        """
-        Retrieves the language setting from the configuration.
-
-        Returns:
-            str: The language specified in the configuration.
-        """
-        return self.get("lang")

@@ -5,95 +5,95 @@ from src.core.domain.models import Alias
 
 class RepositoryInterface(ABC):
     """
-    An abstract base class defining the interface for a repository that manages aliases.
+    Абстрактный базовый класс, определяющий интерфейс репозитория, управляющего чтением алиасов.
 
     Methods:
-        get_all: Retrieves all aliases from the repository.
-        get: Retrieves a specific alias by its name.
+        get_all: Получает все алиасы из репозитория
+        get: Получает определенный алиас по его имени
     """
 
     @abstractmethod
     def get_all(self) -> dict[str, Alias]:
         """
-        Retrieves all aliases stored in the repository.
+        Получает все алиасы из репозитория.
 
         Returns:
-            dict[str, Alias]: A dictionary mapping alias names to Alias objects.
+            dict[str, Alias]: Карта имен алиасов и объектов
         """
         ...
 
     @abstractmethod
     def get(self, alias_name: str) -> Alias:
         """
-        Retrieves a specific alias by its name.
+        Получает определенный алиас по его имени.
 
         Args:
-            alias_name (str): The name of the alias to retrieve.
+            alias_name (str): Имя алиаса
 
         Returns:
-            Alias: The Alias object corresponding to the given name.
+            Alias: Объект Алиаса
         """
         ...
 
 
 class CommandExecutor(ABC):
     """
-    An abstract base class defining the interface for executing commands.
+    Абстрактный базовый класс, определяющий интерфейс для выполнения команд.
 
     Methods:
-        execute: Executes a given command.
+        execute: Выполняет заданную команду
     """
 
     @abstractmethod
     def execute(self, command: str) -> None:
         """
-        Executes the provided command.
+        Выполняет заданную команду.
 
         Args:
-            command (str): The command to execute.
+            command (str): Команда для выполнения
         """
         ...
 
 
 class ConfigInterface(ABC):
     """
-    An abstract base class defining the interface for accessing configuration settings.
+    Абстрактный базовый класс, определяющий интерфейс доступа к настройкам конфигурации.
 
     Methods:
-        get: Retrieves a configuration value by its key.
-        yaml_file_path: Retrieves the file path for the YAML configuration file.
-        lang: Retrieves the language setting from the configuration.
+        get: Получает значение конфигурации по своему ключу
+        home_path: Отдает путь к проекту
+        aliases_path: Отдает путь к файлу алиасов
     """
 
     @abstractmethod
     def get(self, key: str) -> str:
         """
-        Retrieves a configuration value by its key.
+        Получает значение конфигурации по своему ключу.
 
         Args:
-            key (str): The key for the configuration value.
+            key (str): Ключ
 
         Returns:
-            str: The configuration value corresponding to the key.
+            str: Значение из конфигурации. В основном отдается строка.
         """
         ...
 
     @abstractmethod
-    def yaml_file_path(self) -> str:
+    def home_path(self) -> str:
         """
-        Retrieves the file path for the YAML configuration file.
+        home_path: Отдает путь к проекту
 
         Returns:
-            str: The file path to the YAML configuration file.
+            str: Путь
         """
         ...
 
     @abstractmethod
-    def lang(self) -> str:
+    def aliases_path(self) -> str:
         """
-        Retrieves the language setting from the configuration.
+        Отдает путь к файлу алиасов.
 
         Returns:
-            str: The language setting (e.g., "en", "ru").
+            str: Путь к файлу
         """
         ...

@@ -93,10 +93,10 @@ class AliasNotFoundError(BaseError):
 
 
 class ShowInfoAliasError(BaseError):
-    """Raised when there is an error while displaying alias information."""
+    """Повышен при ошибке при отображении информации о псевдониме."""
     message = "Displaying alias information"
 
 
 class AliasConfigurationFileNotFound(BaseError):
-    """Raised when the alias configuration file does not exist."""
-    message = "The alias configuration file does not exist"
+    """Возникает, когда файл конфигурации не существует."""
+    message = "Файл конфигурации проекта не найден"

@@ -10,19 +10,12 @@ logger: structlog.BoundLogger = structlog.getLogger(InitLoggers.executor.name)
 
 
 class ExecuteAliasUseCase:
-    """
-    A use case for executing commands based on a provided alias and arguments.
-
-    Attributes:
-        executor (CommandExecutor): An interface responsible for executing commands.
-    """
-
     def __init__(self, executor: CommandExecutor) -> None:
         """
-        Initializes the ExecuteAliasUseCase with a command executor.
+        Инициализирует ExecuteAliasUseCase с помощью исполнителя команд.
 
         Args:
-            executor (CommandExecutor): The executor used to run commands.
+            executor (CommandExecutor): Исполнитель, используемый для запуска команд.
         """
         self.executor = executor
 
@@ -33,12 +26,12 @@ class ExecuteAliasUseCase:
             show_command: bool = False
     ) -> None:
         """
-        Executes the command associated with the given alias after validating and merging arguments.
+        Выполняет команду, связанную с данным алиасов, после проверки и объединения аргументов.
 
         Args:
-            alias (Alias): The alias containing the command and argument definitions.
-            provided_args (dict[str, str]): Arguments provided by the user.
-            show_command (bool, optional): If True, prints the command before execution. Defaults to False.
+            alias (Alias): Объект Алиас, содержащий определения команды и аргументов
+            provided_args (dict[str, str]): Аргументы, предоставленные пользователем
+            show_command (bool, optional): Предоставляет информацию о выполнениях команд алиаса, если True
         """
         is_validate = alias.validate_arguments(provided_args)
 
@@ -47,14 +40,14 @@ class ExecuteAliasUseCase:
             command, is_scripts = self._build_command(alias, final_args)
 
             if show_command and not is_scripts:
-                logger.warning("Command execution display enabled")
+                logger.warning("Отображение выполнения команды включено")
                 for cmd_line in command.splitlines():
                     cmd_line = cmd_line.strip()
                     if cmd_line:
                         print(f"\n> {cmd_line}")
                         self.executor.execute(cmd_line)
             elif show_command and is_scripts:
-                logger.warning("You can not view the script in line. These functions are in development!")
+                logger.warning("Вы не можете просмотреть скрипт в режиме просмотра команд. Эти функции находятся в разработке!")
                 self.executor.execute(command)
             else:
                 self.executor.execute(command)
@@ -62,14 +55,14 @@ class ExecuteAliasUseCase:
     @staticmethod
     def _merge_arguments(alias: Alias, provided: dict) -> dict:
         """
-        Merges default arguments from the alias with provided arguments.
+        Комбинирует обязательные и необязательные аргументы алиаса в один словарь
 
         Args:
-            alias (Alias): The alias containing default arguments.
-            provided (dict): Arguments provided by the user.
+            alias (Alias): Объект Алиас, содержащий аргументы
+            provided (dict): Аргументы, предоставленные пользователем
 
         Returns:
-            dict: A dictionary containing the merged arguments.
+            dict: Комбинированный словарь аргументов
         """
         combination = {}
 
@@ -79,34 +72,42 @@ class ExecuteAliasUseCase:
         valid_keys = set(arg.name for arg in alias.args.values()) | set(rarg.name for rarg in alias.rargs.values())
         for key in provided:
             if key not in valid_keys:
-                logger.warning("Argument is not required by the alias, but it was passed", argument=key)
+                logger.warning("Аргумент был передан алиасу, но он не был задан в алиасе", argument=key)
 
         combination.update(provided)
 
         return combination
 
     @staticmethod
-    def _custom_format(template, **kwargs) -> str:
-        # Regular expression to search for placeholders like {key}
+    def _custom_format(command: str, **kwargs) -> str:
+        """
+        Из-за сложной обработки bash сценариев, был введен кастомный форматер команд.
+
+        Args:
+            command (str): Объект Алиас, содержащий аргументы
+            **kwargs (dict): Аргументы
+
+        Returns:
+            str: Форматированная команда с аргументами пользователя
+        """
         pattern = re.compile(r'\{(.*?)\}')
 
         def replace_match(match):
-            key = match.group(1)  # Retrieving the key from the placeholder
+            key = match.group(1)
             return str(kwargs.get(key, match.group(0)))
 
-        # Replace all placeholders in the template
-        return pattern.sub(replace_match, template)
+        return pattern.sub(replace_match, command)
 
     def _build_command(self, alias: Alias, args: dict) -> tuple[str, bool]:
         """
-        Constructs the final command by replacing placeholders in the alias command with provided arguments.
+        Создает окончательную команду, подставляет аргументы в команды алиаса.
 
         Args:
-            alias (Alias): The alias containing the command template.
-            args (dict): The arguments to replace in the command.
+            alias (Alias): Объект Алиас, содержащий команды
+            args (dict): Аргументы пользователя
 
         Returns:
-            str: The fully constructed command.
+            tuple[str, bool]: Возвращает форматированную команду, а также проверку на скрипт
         """
         command = alias.commands
         is_scripts = False

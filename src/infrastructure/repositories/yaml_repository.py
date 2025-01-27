@@ -28,7 +28,7 @@ class YamlRepository(RepositoryInterface):
         _parse_arguments: Parses arguments (optional or required) from the YAML data.
     """
 
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str | Path):
         """
         Initializes the repository and validates the YAML file.
 
@@ -38,7 +38,7 @@ class YamlRepository(RepositoryInterface):
         Raises:
             AliasConfigurationFileNotFound: If the YAML file does not exist.
         """
-        self.file_path = Path(file_path)
+        self.file_path = Path(file_path) if isinstance(file_path, str) else file_path
         if not self.file_path.exists():
             raise AliasConfigurationFileNotFound(logger)
         else:

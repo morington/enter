@@ -18,6 +18,9 @@ def main() -> None:
     Raises:
         AppCritical: If an unexpected error occurs during execution.
     """
+
+    from src.infrastructure.services.config import ConfigHandler
+    config = ConfigHandler()
     # Parse command-line arguments
     args = CommandLineInterfaceParser.parser()
 

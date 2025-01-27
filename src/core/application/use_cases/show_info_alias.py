@@ -9,60 +9,48 @@ logger: structlog.BoundLogger = structlog.getLogger(InitLoggers.cli.name)
 
 
 class ShowAliasInfoUseCase:
-    """
-    A use case for displaying detailed information about a specific alias.
-
-    Attributes:
-        repository (RepositoryInterface): The repository interface used to fetch alias details.
-    """
-
     def __init__(self, repository: RepositoryInterface) -> None:
         """
-        Initializes the ShowAliasInfoUseCase with a repository.
+        Инициализирует ShowAliasInfoUseCase с репозиторием.
 
         Args:
-            repository (RepositoryInterface): The repository to fetch alias details from.
+            repository (RepositoryInterface): Репозиторий, из которого нужно получить сведения об алиасах
         """
         self.repository = repository
 
     def execute(self, alias_name: str, show_commands: bool = False) -> None:
         """
-        Fetches and displays detailed information about the specified alias.
+        Извлекает и отображает подробную информацию об указанном псевдониме.
 
         Args:
-            alias_name (str): The name of the alias to display information for.
-            show_commands (bool, optional): If True, displays the commands associated with the alias. Defaults to False.
+            alias_name (str): Имя алиаса
+            show_commands (bool, False): Выводит информацию о командах алиаса, если True
 
         Raises:
-            ShowInfoAliasError: If an error occurs while fetching or displaying alias information.
+            ShowInfoAliasError: возникает, если не удалось извлечь информацию об алиасе
         """
         try:
-            # Fetch the alias from the repository
             alias = self.repository.get(alias_name)
-            # Display the alias information
             self._display_info(alias, show_commands)
         except Exception as e:
-            # Raise a custom error with logging
             raise ShowInfoAliasError(logger, err=e) from e
 
     @staticmethod
     def _display_info(alias: Alias, show_commands: bool) -> None:
         """
-        Displays detailed information about the alias, including its description, arguments, and optionally its commands.
+        Отображает подробную информацию об алиасе, включая его описание, аргументы и, при необходимости, команды.
 
         Args:
-            alias (Alias): The alias object containing the details to display.
-            show_commands (bool): If True, displays the commands associated with the alias.
+            alias (Alias): Объект алиаса, содержащий детали для отображения
+            show_commands (bool): Выводит информацию о командах алиаса, если True
         """
         # Warn if the alias has no commands
         if not alias.commands:
             logger.warning("The alias has no commands, although the key is specified", alias=alias.name)
 
-        # Display alias name and description
         print(f"Alias: {alias.name}")
         print(f"Description:\n  {alias.description}")
 
-        # Display optional arguments
         if alias.args:
             print("\n[▼] Arguments:")
             for arg in alias.args.values():
@@ -71,7 +59,6 @@ class ShowAliasInfoUseCase:
                 icon_required = "▣" if is_requiring else "▢"
                 print(f"  {icon_required} {arg.name}{'*' if is_requiring else ''}{default} - {arg.description}")
 
-        # Display required arguments
         if alias.rargs:
             print("\n[▼] Required Arguments:")
             for rarg in alias.rargs.values():
@@ -80,7 +67,6 @@ class ShowAliasInfoUseCase:
                 icon_required = "▣" if is_requiring else "▢"
                 print(f"  {icon_required} {rarg.name}{'*' if is_requiring else ''}{default} - {rarg.description}")
 
-        # Display commands if requested
         if show_commands:
             if alias.commands:
                 print("\n[▼] Commands:")
