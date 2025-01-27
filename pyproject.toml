@@ -1,0 +1,122 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "enter"
+description = "Manager of aliases and scripts for being and automation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Adam Morington", email = "morington.mail@gmail.com" },
+]
+maintainers = [
+    { name = "Adam Morington", email = "morington.mail@gmail.com" },
+]
+keywords = [
+    "alias",
+    "script",
+    "manager",
+    "automation",
+    "terminal",
+    "cli",
+    "workflow",
+    "commands",
+    "integration"
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: System :: Shells",
+    "Topic :: Utilities",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Automation",
+
+]
+dependencies = [
+    "PyYAML>=6.0.2",
+    "structlog>=25.1.0"
+]
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "enter/__meta__.py"
+
+[project.urls]
+#Homepage = ""
+#Documentation = ""
+Repository = "https://github.com/morington/enter/"
+
+[tool.ruff.lint]
+select = [
+    "C4",
+    "E",
+    "F",
+    "T10",
+    "T20",
+    "Q",
+    "RET",
+]
+ignore = [
+    "F401"
+]
+
+[tool.mypy]
+plugins = "pydantic.mypy"
+python_version = "3.10"
+show_error_codes = true
+show_error_context = true
+pretty = true
+ignore_missing_imports = false
+warn_unused_configs = true
+disallow_subclassing_any = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+follow_imports_for_stubs = true
+namespace_packages = true
+show_absolute_path = true
+
+[tool.black]
+line-length = 160
+target-version = ['py310', 'py311', 'py312', 'py313']
+exclude = '''
+(
+    \.eggs
+  | \.git
+  | \.tox
+  | build
+  | dist
+  | venv
+  | docs
+)
+'''
+
+[tool.towncrier]
+package = "enter"
+filename = "CHANGES.md"
+directory = "CHANGES/"
+template = "CHANGES/.template.md.jinja2"
+issue_format = "`#{issue} <https://github.com/morington/enter/issues/{issue}>`_"
+ignore = [
+    ".template.md.jinja2",
+]
+
