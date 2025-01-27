@@ -27,7 +27,8 @@ class ConfigHandler(ConfigInterface):
     if os.getenv("MODE_DEV"):
         _config_file: Path = Path("config.ini")
     else:
-        _config_file: Path = Path(os.getenv("PYTHONPATH")) / "config.ini"
+        _config_file = Path(os.getenv("HOME")) / ".local/config/config.ini"
+
     _required_fields: tuple[str, ...] = ("yaml_file_path", "lang")
 
     def __init__(self) -> None:

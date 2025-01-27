@@ -1,4 +1,4 @@
 [ENTER]
-enter_path = /home/morington/.local/bin/enter
-yaml_file_path = aliases.yml
+enter_path = /path/to/enter_folder
+yaml_file_path = /path/to/aliases.yml
 lang = en
