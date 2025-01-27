@@ -23,8 +23,12 @@ def app(args: Namespace) -> None:
     # Initialize the repository to fetch aliases from a YAML file
     repository = YamlRepository(file_path=config.yaml_file_path)
 
+    # Process the “updates” command to update Enter.
+    if args.update:
+        executor.execute("git pull")
+
     # Handle the 'list' command to display all aliases
-    if args.list:
+    elif args.list:
         use_case = ListAliasesUseCase(repository=repository)
         use_case.execute()
 
